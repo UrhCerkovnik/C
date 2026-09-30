@@ -14,27 +14,52 @@ void izpisi_plosco(char plosca[VELIKOST][VELIKOST]) {
     }
 }
 
-int stiri_v_vrsti(char plosca[VELIKOST][VELIKOST], int vrstica, int stolpec) {
-    const int smeri[4][2] = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
+int stevilo_v_smeri(char plosca[VELIKOST][VELIKOST], int vrstica, int stolpec,
+                    int premik_vrstice, int premik_stolpca) {
     char figura = plosca[vrstica][stolpec];
+    int stevilo = 0;
 
-    for (int i = 0; i < 4; i++) {
-        int stevilo = 1;
-        for (int smer = -1; smer <= 1; smer += 2) {
-            int nova_vrstica = vrstica + smer * smeri[i][0];
-            int nov_stolpec = stolpec + smer * smeri[i][1];
-            while (nova_vrstica >= 0 && nova_vrstica < VELIKOST &&
-                   nov_stolpec >= 0 && nov_stolpec < VELIKOST &&
-                   plosca[nova_vrstica][nov_stolpec] == figura) {
-                stevilo++;
-                nova_vrstica += smer * smeri[i][0];
-                nov_stolpec += smer * smeri[i][1];
-            }
-        }
-        if (stevilo >= 4) {
-            return 1;
-        }
+    vrstica += premik_vrstice;
+    stolpec += premik_stolpca;
+    while (vrstica >= 0 && vrstica < VELIKOST &&
+           stolpec >= 0 && stolpec < VELIKOST &&
+           plosca[vrstica][stolpec] == figura) {
+        stevilo++;
+        vrstica += premik_vrstice;
+        stolpec += premik_stolpca;
     }
+    return stevilo;
+}
+
+int stiri_v_vrsti(char plosca[VELIKOST][VELIKOST], int vrstica, int stolpec) {
+    int stevilo = 1;
+    stevilo += stevilo_v_smeri(plosca, vrstica, stolpec, 0, 1);
+    stevilo += stevilo_v_smeri(plosca, vrstica, stolpec, 0, -1);
+    if (stevilo >= 4) {
+        return 1;
+    }
+
+    stevilo = 1;
+    stevilo += stevilo_v_smeri(plosca, vrstica, stolpec, 1, 0);
+    stevilo += stevilo_v_smeri(plosca, vrstica, stolpec, -1, 0);
+    if (stevilo >= 4) {
+        return 1;
+    }
+
+    stevilo = 1;
+    stevilo += stevilo_v_smeri(plosca, vrstica, stolpec, 1, 1);
+    stevilo += stevilo_v_smeri(plosca, vrstica, stolpec, -1, -1);
+    if (stevilo >= 4) {
+        return 1;
+    }
+
+    stevilo = 1;
+    stevilo += stevilo_v_smeri(plosca, vrstica, stolpec, 1, -1);
+    stevilo += stevilo_v_smeri(plosca, vrstica, stolpec, -1, 1);
+    if (stevilo >= 4) {
+        return 1;
+    }
+
     return 0;
 }
 
